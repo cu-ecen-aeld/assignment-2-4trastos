@@ -10,7 +10,38 @@ WRITESTR=AELD_IS_FUN
 WRITEDIR=/tmp/aeld-data
 username=$(cat conf/username.txt)
 
-if [ $# -lt 3 ]
+if [ $# -lt 3 ]#!/bin/sh
+
+# Configuración
+NUMFILES=10
+WRITESTR=AELD_IS_FUN
+WRITEDIR=/tmp/aeld-data
+username=$(cat ../conf/username.txt)
+
+# Limpieza y compilación
+make clean
+make
+
+# Crear directorio (requisito: el directorio debe existir)
+mkdir -p "$WRITEDIR"
+
+# Escribir archivos con writer (no writer.sh)
+for i in $(seq 1 $NUMFILES); do
+    ./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+done
+
+# Verificar resultados
+OUTPUTSTRING=$(./finder.sh "$WRITEDIR" "$WRITESTR")
+MATCHSTR="The number of files are ${NUMFILES} and the number of matching lines are ${NUMFILES}"
+
+# Mostrar éxito/fallo
+if echo "$OUTPUTSTRING" | grep -q "$MATCHSTR"; then
+    echo "success"
+    exit 0
+else
+    echo "failed: expected '$MATCHSTR' but got '$OUTPUTSTRING'"
+    exit 1
+fi
 then
 	echo "Using default value ${WRITESTR} for string to write"
 	if [ $# -lt 1 ]
