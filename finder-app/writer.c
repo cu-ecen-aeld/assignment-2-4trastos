@@ -34,14 +34,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Cerrar el archivo
     if (fclose(file) != 0) {
         syslog(LOG_ERR, "Failed to properly close file %s", writefile);
         closelog();
         return 1;
     }
 
-    // Mensaje de éxito (LOG_DEBUG como se requiere)
     syslog(LOG_DEBUG, "Writing '%s' to '%s'", writestr, writefile);
 
     // Cerrar syslog
